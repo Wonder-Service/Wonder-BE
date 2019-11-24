@@ -2,13 +2,14 @@ package PRMProject.repository;
 
 import PRMProject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    public String getRoleByPasswordAndUsername(String password, String userName);
+    String getRoleByPasswordAndUsername(String password, String userName);
 
-    public User findUserByUsername(String username);
+    User findUserByUsername(String username);
 
 }

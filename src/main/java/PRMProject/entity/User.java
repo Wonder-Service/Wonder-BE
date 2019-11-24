@@ -2,10 +2,9 @@ package PRMProject.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -16,6 +15,9 @@ import javax.persistence.Table;
 @Table(name = "TBL_USER")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "USERNAME")
     private String username;
 
@@ -33,4 +35,8 @@ public class User {
 
     @Column(name = "IS_DELETE")
     private boolean isDelete;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TBL_WORKER_SKILL", joinColumns = @JoinColumn(name = "WORKER_ID"), inverseJoinColumns = @JoinColumn(name = "SKILL_ID"))
+    private Set<Skill> skills = new HashSet<>();
 }
