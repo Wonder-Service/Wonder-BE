@@ -39,4 +39,7 @@ public class User {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TBL_WORKER_SKILL", joinColumns = @JoinColumn(name = "WORKER_ID"), inverseJoinColumns = @JoinColumn(name = "SKILL_ID"))
     private Set<Skill> skills = new HashSet<>();
+
+    @Column(name = "DEVICE_ID")
+    private String deviceId;
 }

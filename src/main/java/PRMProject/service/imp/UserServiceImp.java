@@ -1,5 +1,6 @@
 package PRMProject.service.imp;
 
+import PRMProject.config.sercurity.JWTVerifier;
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
 import PRMProject.entity.User_;
@@ -80,5 +81,21 @@ public class UserServiceImp implements UserService {
     @Override
     public List<Order> getOrderByUsername(String username) {
         return orderRepository.getByWorker_Username(username);
+    }
+
+    @Override
+    public User saveDeviceId(String deviceId) {
+        try {
+            log.info("saveDeviceId");
+           User user = userRepository.findUserByUsername(JWTVerifier.USERNAME);
+           User rs;
+           if(user != null){
+               user.setDeviceId(deviceId);
+               rs = userRepository.save(user);
+           }
+           return user;
+        } finally {
+            log.info("saveDeviceId");
+        }
     }
 }
