@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -41,4 +42,33 @@ public class OrderController {
             log.info("getById");
         }
     }
+
+    @PostMapping
+    public ResponseEntity<Order> requestOrder(@RequestBody Order order) {
+        try {
+            log.info("requestOrder");
+            Order rs = orderService.requestOrder(order);
+            return ResponseEntity.ok(rs);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            log.info("requestOrder");
+        }
+        return null;
+    }
+
+    @PutMapping
+    public ResponseEntity acceptOrder(long orderId) {
+        try {
+            log.info("requestOrder");
+            Order rs = orderService.acceptOrder(orderId);
+            return ResponseEntity.ok(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("This Order not avaiable");
+        } finally {
+            log.info("requestOrder");
+        }
+    }
+
 }

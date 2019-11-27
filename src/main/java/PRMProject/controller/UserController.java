@@ -65,4 +65,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/device-id")
+    public ResponseEntity saveDeviceId(@RequestBody String deviceId) {
+        try {
+            log.info("saveDeviceId");
+
+            User user = userService.saveDeviceId(deviceId);
+
+            return new ResponseEntity(user, HttpStatus.OK);
+        } finally {
+            log.info("saveDeviceId");
+        }
+    }
+
 }
