@@ -5,11 +5,15 @@ import PRMProject.entity.Order;
 import PRMProject.entity.Order_;
 import PRMProject.entity.User;
 import PRMProject.entity.User_;
+import PRMProject.entity.WorkDescription;
 import PRMProject.entity.specifications.SpecificationBuilder;
+import PRMProject.model.OrderDTO;
 import PRMProject.model.RequestOrderDTO;
 import PRMProject.repository.OrderRepository;
 import PRMProject.repository.UserRepository;
+import PRMProject.repository.WorkDescriptionRepository;
 import PRMProject.service.OrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +50,8 @@ public class OrderServiceImp implements OrderService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private WorkDescriptionRepository workDescriptionRepository;
 
     @Override
     public List<Order> getAll(String workerName) {
@@ -66,12 +72,32 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order requestOrder(RequestOrderDTO requestOrderDTO) throws IOException {
+    public Order requestOrder(RequestOrderDTO requestOrderDTO) throws Exception {
         try {
             log.info("Begin request Order");
             //create order
-            //Order order = Order.builder().address(requestOrderDTO.getAddress()).customer(JW)
-            //orderRepository.save(order);
+
+            User user = userRepository.findUserByUsername(JWTVerifier.USERNAME);
+
+
+            WorkDescription workDescription = WorkDescription.builder()
+                    .customerId(user.getId())
+                    .description(requestOrderDTO.getDescription()).build();
+
+            workDescriptionRepository.save(workDescription);
+
+            if (user == null) {
+                throw new Exception();
+            }
+
+            Order order = Order.builder().customer(user).address(requestOrderDTO.getAddress())
+                    .workDescription(workDescription).build();
+
+            orderRepository.save(order);
+
+            OrderDTO dto = OrderDTO.builder().orderId(order.getId())
+                    .description(order.getWorkDescription().getDescription())
+                    .customerPhone(order.getCustomer().getPhone()).build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,7 +107,7 @@ public class OrderServiceImp implements OrderService {
                         log.info(snap.getKey());
                         try {
                             //notification to Workers
-                            sendNotification(snap.getKey() ,"we found new job avaiable for you");
+                            sendNotification(snap.getKey(), dto);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -105,12 +131,12 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order acceptOrder(long orderId) throws  Exception {
+    public Order acceptOrder(long orderId) throws Exception {
         try {
-            Order rs =null;
+            Order rs = null;
             log.info("accept Order Service");
             Order order = orderRepository.getOne(orderId);
-            if(order.getWorker()!= null) {
+            if (order.getWorker() != null) {
                 throw new Exception();
             }
 
@@ -119,7 +145,7 @@ public class OrderServiceImp implements OrderService {
             order.setWorker(worker);
             orderRepository.save(order);
 
-            sendNotification(order.getCustomer().getDeviceId(),"we found a worker");
+            sendNotification(order.getCustomer().getDeviceId(), "we found a worker");
 
             return rs;
         } finally {
@@ -127,16 +153,25 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
-    public void sendNotification(String deviceId, String message) throws IOException {
+    public void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
-        String token = "ExponentPushToken["+deviceId+"]";
+        String token = "ExponentPushToken[" + deviceId + "]";
         HttpPost post = new HttpPost("https://expo.io/--/api/v2/push/send");
+        StringBuilder bodyStr = new StringBuilder();
+        OrderDTO orderDTO = (OrderDTO) data;
+
+        bodyStr.append("{");
+        bodyStr.append(" \"orderId\":" + orderDTO.getOrderId() + ",");
+        bodyStr.append(" \"description\":" + " \" " + orderDTO.getDescription() + "\"");
+        bodyStr.append("\"price\":" + orderDTO.getPrice());
+        bodyStr.append("\"Customer Phone\":" + "\"" + orderDTO.getCustomerPhone() + "\"");
+        bodyStr.append("},");
         StringBuilder json = new StringBuilder();
         json.append("{\n" +
                 "\"to\":\""+ token+"\"," +
                 " \"title\":\"Thanh Dep Trai Notification\",\"subtitle\":\"Tao la so 1\",\"body\":\"Dep trai hoc gioi " +
                 "con nha giau va da tai\",\"data\":" +
-                "{\"messenger\":\""+ message+"\"},\"category\":\"asd\"}");
+                new ObjectMapper().writeValueAsString(orderDTO) + ",\"category\":\"asd\"}");
         log.info(json.toString());
 
         post.setEntity(new StringEntity(json.toString()));

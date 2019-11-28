@@ -24,6 +24,7 @@ import javax.persistence.Table;
 @Setter
 @Table(name = "TBL_WORK_DESCRIPTION")
 public class WorkDescription {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +32,7 @@ public class WorkDescription {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_ID")
-    private User customer;
+    @Column(name= "CUSTOMER_ID")
+    private long customerId;
+
 }

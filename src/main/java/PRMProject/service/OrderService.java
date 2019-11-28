@@ -12,7 +12,7 @@ public interface OrderService {
 
     Order getById (Long id);
 
-    Order requestOrder(RequestOrderDTO requestOrderDTO) throws IOException;
+    Order requestOrder(RequestOrderDTO requestOrderDTO) throws Exception;
 
     Order acceptOrder(long orderId) throws Exception;
 
