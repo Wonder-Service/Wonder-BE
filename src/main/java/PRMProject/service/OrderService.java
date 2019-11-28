@@ -1,6 +1,7 @@
 package PRMProject.service;
 
 import PRMProject.entity.Order;
+import PRMProject.model.RequestOrderDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +12,7 @@ public interface OrderService {
 
     Order getById (Long id);
 
-    Order requestOrder(Order order) throws IOException;
+    Order requestOrder(RequestOrderDTO requestOrderDTO) throws IOException;
 
     Order acceptOrder(long orderId) throws Exception;
 
