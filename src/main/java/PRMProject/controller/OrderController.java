@@ -3,6 +3,7 @@ package PRMProject.controller;
 
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
+import PRMProject.model.RequestOrderDTO;
 import PRMProject.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> requestOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> requestOrder(RequestOrderDTO order) {
         try {
             log.info("requestOrder");
             Order rs = orderService.requestOrder(order);

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 public class RequestOrderDTO {
 
-    private String workdescription;
+    private String description;
     private String address;
     private String workCatogeryId;
 
