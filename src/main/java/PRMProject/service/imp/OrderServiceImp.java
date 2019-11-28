@@ -6,7 +6,7 @@ import PRMProject.entity.Order_;
 import PRMProject.entity.User;
 import PRMProject.entity.User_;
 import PRMProject.entity.specifications.SpecificationBuilder;
-import PRMProject.model.Coords;
+import PRMProject.model.RequestOrderDTO;
 import PRMProject.repository.OrderRepository;
 import PRMProject.repository.UserRepository;
 import PRMProject.service.OrderService;
@@ -14,17 +14,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,7 +32,6 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -71,11 +66,12 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order requestOrder(Order order) throws IOException {
+    public Order requestOrder(RequestOrderDTO requestOrderDTO) throws IOException {
         try {
             log.info("Begin request Order");
             //create order
-            orderRepository.save(order);
+            //Order order = Order.builder().address(requestOrderDTO.getAddress()).customer(JW)
+            //orderRepository.save(order);
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -85,7 +81,7 @@ public class OrderServiceImp implements OrderService {
                         log.info(snap.getKey());
                         try {
                             //notification to Workers
-                            sendNotification(snap.getKey());
+                            sendNotification(snap.getKey() ,"we found new job avaiable for you");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -98,10 +94,9 @@ public class OrderServiceImp implements OrderService {
 
                 }
             });
-            Coords coords = new Coords();
 
 
-            Order rs = null;
+            Order rs = new Order();
 
             return rs;
         } finally {
@@ -124,21 +119,25 @@ public class OrderServiceImp implements OrderService {
             order.setWorker(worker);
             orderRepository.save(order);
 
+            sendNotification(order.getCustomer().getDeviceId(),"we found a worker");
+
             return rs;
         } finally {
             log.info("accept Order Service");
         }
     }
 
-    public void sendNotification(String deviceId) throws IOException {
+    public void sendNotification(String deviceId, String message) throws IOException {
         String result = "";
+        String token = "ExponentPushToken["+deviceId+"]";
         HttpPost post = new HttpPost("https://expo.io/--/api/v2/push/send");
         StringBuilder json = new StringBuilder();
         json.append("{\n" +
-                "\t\"to\":"+ deviceId+"\",\n" +
+                "\"to\":\""+ token+"\"," +
                 " \"title\":\"Thanh Dep Trai Notification\",\"subtitle\":\"Tao la so 1\",\"body\":\"Dep trai hoc gioi " +
                 "con nha giau va da tai\",\"data\":" +
-                "{\"messenger\":\"Test Notification\"},\"category\":\"asd\"}");
+                "{\"messenger\":\""+ message+"\"},\"category\":\"asd\"}");
+        log.info(json.toString());
 
         post.setEntity(new StringEntity(json.toString()));
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
