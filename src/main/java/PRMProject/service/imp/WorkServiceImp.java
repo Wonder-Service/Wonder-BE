@@ -38,7 +38,7 @@ public class WorkServiceImp implements WorkService {
         }
 
         WorkDescription workDescription = new WorkDescription();
-        workDescription.setCustomer(user.get());
+        workDescription.setCustomerId(user.get().getId());
         workDescription.setDescription(workDescriptionDto.getDescription());
         return workRepository.save(workDescription);
     }

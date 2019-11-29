@@ -87,7 +87,7 @@ public class UserServiceImp implements UserService {
     public User saveDeviceId(String deviceId) {
         try {
             log.info("saveDeviceId");
-           User user = userRepository.findUserByUsername(JWTVerifier.USERNAME);
+           User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
            User rs;
            if(user != null){
                user.setDeviceId(deviceId);

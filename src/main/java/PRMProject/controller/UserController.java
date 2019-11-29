@@ -3,14 +3,18 @@ package PRMProject.controller;
 
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
+import PRMProject.model.UserDto;
+import PRMProject.repository.UserRepository;
 import PRMProject.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +28,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<List<User>> getAll(@RequestParam(required = false) String username,
@@ -60,12 +67,16 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity createAccount(String username, String password, String role) {
+    public ResponseEntity createAccount(@RequestBody UserDto userDto) {
         try {
             log.info("createAccount");
-            User user = User.builder().username(username).password(password).role(role).build();
+            User user = userRepository.findUserByUsernameIgnoreCase(userDto.getUsername());
+            if (ObjectUtils.isNotEmpty(user)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).role(userDto.getRole()).build();
             User createdUser = userService.createUser(user);
-            return new ResponseEntity(createdUser, HttpStatus.OK);
+            return ResponseEntity.ok(createdUser);
         } finally {
             log.info("createAccount");
         }

@@ -77,7 +77,7 @@ public class OrderServiceImp implements OrderService {
             log.info("Begin request Order");
             //create order
 
-            User user = userRepository.findUserByUsername(JWTVerifier.USERNAME);
+            User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
 
 
             WorkDescription workDescription = WorkDescription.builder()
@@ -90,14 +90,14 @@ public class OrderServiceImp implements OrderService {
                 throw new Exception();
             }
 
-            Order order = Order.builder().customer(user).address(requestOrderDTO.getAddress())
+            Order order = Order.builder().address(requestOrderDTO.getAddress())
                     .workDescription(workDescription).build();
 
             orderRepository.save(order);
 
             OrderDTO dto = OrderDTO.builder().orderId(order.getId())
                     .description(order.getWorkDescription().getDescription())
-                    .customerPhone(order.getCustomer().getPhone()).build();
+                    .customerPhone(user.getPhone()).build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,12 +140,12 @@ public class OrderServiceImp implements OrderService {
                 throw new Exception();
             }
 
-            User worker = userRepository.findUserByUsername(JWTVerifier.USERNAME);
+            User worker = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
 
             order.setWorker(worker);
             orderRepository.save(order);
 
-            sendNotification(order.getCustomer().getDeviceId(), "we found a worker");
+            sendNotification(worker.getDeviceId(), "we found a worker");
 
             return rs;
         } finally {
