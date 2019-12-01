@@ -15,4 +15,6 @@ public class WorkDescriptionDto {
     private String description;
 
     private Long customerId;
+
+    private long skillId;
 }

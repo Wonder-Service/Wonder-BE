@@ -27,7 +27,7 @@ public class WorkServiceImp implements WorkService {
 
     @Override
     public WorkDescription createWork(WorkDescriptionDto workDescriptionDto) {
-        if(StringUtils.isEmpty(workDescriptionDto.getCustomerId())){
+        if (StringUtils.isEmpty(workDescriptionDto.getCustomerId())) {
             log.error("Customer ID required");
             return null;
         }
@@ -40,6 +40,7 @@ public class WorkServiceImp implements WorkService {
         WorkDescription workDescription = new WorkDescription();
         workDescription.setCustomerId(user.get().getId());
         workDescription.setDescription(workDescriptionDto.getDescription());
+        workDescription.setSkillId(workDescriptionDto.getSkillId());
         return workRepository.save(workDescription);
     }
 }
