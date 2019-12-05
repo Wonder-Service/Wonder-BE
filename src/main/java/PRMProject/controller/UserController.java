@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,6 +56,17 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDto userDto) {
+        try {
+            log.info("getById");
+            User user = userService.update(id, userDto);
+            return ResponseEntity.ok(user);
+        } finally {
+            log.info("getById");
+        }
+    }
+
     @GetMapping("/{username}/order")
     public ResponseEntity<List<Order>> getOrderByUserName(@PathVariable String username) {
         try {
@@ -79,6 +91,17 @@ public class UserController {
             return ResponseEntity.ok(createdUser);
         } finally {
             log.info("createAccount");
+        }
+    }
+
+    @PutMapping("/{userId}/skills")
+    public ResponseEntity addSkillToUser(@PathVariable Long userId, @RequestParam Long[] id) {
+        try {
+            log.info("addSkillToUser");
+           userService.addSkillToUser(userId, id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } finally {
+            log.info("addSkillToUser");
         }
     }
 

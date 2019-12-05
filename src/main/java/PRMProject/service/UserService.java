@@ -2,6 +2,7 @@ package PRMProject.service;
 
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
+import PRMProject.model.UserDto;
 
 import java.util.List;
 
@@ -18,4 +19,8 @@ public interface UserService {
     List<Order> getOrderByUsername(String username);
 
     User saveDeviceId(String deviceId);
+
+    User update(Long id, UserDto userDto);
+
+    void addSkillToUser(Long userId, Long[] skillId);
 }
