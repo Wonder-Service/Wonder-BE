@@ -16,6 +16,7 @@ public class RequestOrderDTO {
 
     private String description;
     private String address;
-    private String workCatogeryId;
+    private long skillId;
+    private String nameDevice;
 
 }
