@@ -51,4 +51,8 @@ public class Order {
 
     @Column(name = "FEEDBACK")
     private boolean isDelete;
+
+    @Column(name = "NAME_DEVICE")
+    private String nameDevice;
+    
 }

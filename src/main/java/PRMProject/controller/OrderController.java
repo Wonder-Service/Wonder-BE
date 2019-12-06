@@ -65,11 +65,11 @@ public class OrderController {
         return null;
     }
 
-    @PutMapping
-    public ResponseEntity acceptOrder(long orderId) {
+    @PutMapping("/{id}")
+    public ResponseEntity acceptOrder(@PathVariable Long id) {
         try {
             log.info("requestOrder");
-            Order rs = orderService.acceptOrder(orderId);
+            Order rs = orderService.acceptOrder(id);
             return ResponseEntity.ok(rs);
         } catch (Exception e) {
             e.printStackTrace();

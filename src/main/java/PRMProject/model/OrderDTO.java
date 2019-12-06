@@ -15,8 +15,10 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 public class OrderDTO {
+
     private long orderId;
     private String description;
     private BigDecimal price;
     private String customerPhone;
+    private String address;
 }

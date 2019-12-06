@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.criteria.Join;
 import javax.transaction.Transactional;
@@ -82,9 +83,9 @@ public class OrderServiceImp implements OrderService {
 
             WorkDescription workDescription = WorkDescription.builder()
                     .customerId(user.getId())
-                    .description(requestOrderDTO.getDescription()).build();
-
-            workDescriptionRepository.save(workDescription);
+                    .description(requestOrderDTO.getDescription()).skillId(requestOrderDTO.getSkillId()).build();
+//
+            workDescription = workDescriptionRepository.save(workDescription);
 
             if (user == null) {
                 throw new Exception();
@@ -93,9 +94,10 @@ public class OrderServiceImp implements OrderService {
             Order order = Order.builder().address(requestOrderDTO.getAddress())
                     .workDescription(workDescription).build();
 
-            orderRepository.save(order);
+            order =  orderRepository.save(order);
 
-            OrderDTO dto = OrderDTO.builder().orderId(order.getId())
+            //dto for send notification
+            OrderDTO dto = OrderDTO.builder().orderId(order.getId()).address(order.getAddress())
                     .description(order.getWorkDescription().getDescription())
                     .customerPhone(user.getPhone()).build();
 
@@ -131,10 +133,11 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order acceptOrder(long orderId) throws Exception {
+    public Order acceptOrder( Long orderId) throws Exception {
         try {
             Order rs = null;
             log.info("accept Order Service");
+
             Order order = orderRepository.getOne(orderId);
             if (order.getWorker() != null) {
                 throw new Exception();
@@ -145,7 +148,7 @@ public class OrderServiceImp implements OrderService {
             order.setWorker(worker);
             orderRepository.save(order);
 
-            sendNotification(worker.getDeviceId(), "we found a worker");
+//            sendNotification(worker.getDeviceId(), "we found a worker");
 
             return rs;
         } finally {
