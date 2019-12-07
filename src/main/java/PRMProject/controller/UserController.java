@@ -34,11 +34,12 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll(@RequestParam(required = false) String username,
-                                             @RequestParam(required = false) String role) {
+    public ResponseEntity<List<UserDto>> getAll(@RequestParam(required = false) String username,
+                                                @RequestParam(required = false) String role,
+                                                @RequestParam(required = false) Long skillId) {
         try {
             log.info("getAll");
-            List<User> user = userService.getAll(username, role);
+            List<UserDto> user = userService.getAll(username, role, skillId);
             return ResponseEntity.ok(user);
         } finally {
             log.info("getAll");
@@ -60,8 +61,8 @@ public class UserController {
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDto userDto) {
         try {
             log.info("getById");
-            User user = userService.update(id, userDto);
-            return ResponseEntity.ok(user);
+            userService.update(id, userDto);
+            return ResponseEntity.ok().build();
         } finally {
             log.info("getById");
         }
@@ -98,7 +99,7 @@ public class UserController {
     public ResponseEntity addSkillToUser(@PathVariable Long userId, @RequestParam Long[] id) {
         try {
             log.info("addSkillToUser");
-           userService.addSkillToUser(userId, id);
+            userService.addSkillToUser(userId, id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } finally {
             log.info("addSkillToUser");

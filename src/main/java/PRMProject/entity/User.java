@@ -36,7 +36,7 @@ public class User {
     @Column(name = "IS_DELETE")
     private boolean isDelete;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "TBL_WORKER_SKILL", joinColumns = @JoinColumn(name = "WORKER_ID"), inverseJoinColumns = @JoinColumn(name = "SKILL_ID"))
     private Set<Skill> skills = new HashSet<>();
 

@@ -12,7 +12,7 @@ public interface UserService {
 
     User createUser(User user);
 
-    List<User> getAll(String username, String role);
+    List<UserDto> getAll(String username, String role, Long skillId);
 
     User getById(Long id);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     User saveDeviceId(String deviceId);
 
-    User update(Long id, UserDto userDto);
+    void update(Long id, UserDto userDto);
 
     void addSkillToUser(Long userId, Long[] skillId);
 }

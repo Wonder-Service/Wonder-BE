@@ -1,8 +1,10 @@
 package PRMProject.service.imp;
 
+import PRMProject.config.mapper.UserMapper;
 import PRMProject.config.sercurity.JWTVerifier;
 import PRMProject.entity.Order;
 import PRMProject.entity.Skill;
+import PRMProject.entity.Skill_;
 import PRMProject.entity.User;
 import PRMProject.entity.User_;
 import PRMProject.entity.specifications.SpecificationBuilder;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,6 +46,9 @@ public class UserServiceImp implements UserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    UserMapper userMapper;
+
     public String getRoleByUserNameAndPassword(String username, String password) {
         try {
             log.info("getRoleByUserNameAndPassword");
@@ -65,7 +71,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<User> getAll(String username, String role) {
+    public List<UserDto> getAll(String username, String role, Long skillId) {
         List<Specification<User>> specification = new ArrayList<>();
         if (!StringUtils.isEmpty(username)) {
             specification.add((root, query, cb) -> {
@@ -77,7 +83,14 @@ public class UserServiceImp implements UserService {
                 return cb.equal(cb.upper(root.get(User_.role)), role.toUpperCase().trim());
             });
         }
-        return userRepository.findAll(SpecificationBuilder.build(specification)).stream().collect(Collectors.toList());
+        if (!StringUtils.isEmpty(skillId)) {
+            specification.add((root, query, cb) -> {
+                SetJoin<User, Skill> skill = root.join(User_.skills);
+                return cb.equal(skill.get(Skill_.ID), skillId);
+            });
+        }
+        return userRepository.findAll(SpecificationBuilder.build(specification))
+                .stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -108,13 +121,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User update(Long id, UserDto userDto) {
+    public void update(Long id, UserDto userDto) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             user.get().setDelete(userDto.isDelete());
-            return user.get();
         }
-        return null;
     }
 
     @Override
