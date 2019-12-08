@@ -3,6 +3,7 @@ package PRMProject.controller;
 
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
+import PRMProject.model.DeviceDTO;
 import PRMProject.model.UserDto;
 import PRMProject.repository.UserRepository;
 import PRMProject.service.UserService;
@@ -40,10 +41,12 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAll(@RequestParam(required = false) String username,
                                                 @RequestParam(required = false) String role,
                                                 @RequestParam(required = false) Long skillId,
-                                                @RequestParam(required = false) Boolean isDelete) {
+                                                @RequestParam(required = false) Boolean isDelete,
+                                                @RequestParam(required = false) Boolean isMyProfile) {
+
         try {
             log.info("getAll");
-            List<UserDto> user = userService.getAll(username, role, skillId, isDelete);
+            List<UserDto> user = userService.getAll(username, role, skillId, isDelete, isMyProfile);
             return ResponseEntity.ok(user);
         } finally {
             log.info("getAll");
@@ -122,11 +125,11 @@ public class UserController {
     }
 
     @PostMapping("/device-id")
-    public ResponseEntity saveDeviceId(String deviceId) {
+    public ResponseEntity saveDeviceId(@RequestBody DeviceDTO deviceDTO) {
         try {
             log.info("saveDeviceId");
 
-            User user = userService.saveDeviceId(deviceId);
+            User user = userService.saveDeviceId(deviceDTO.getDeviceId());
 
             return new ResponseEntity(user, HttpStatus.OK);
         } finally {

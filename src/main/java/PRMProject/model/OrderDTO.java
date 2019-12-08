@@ -21,4 +21,6 @@ public class OrderDTO {
     private BigDecimal price;
     private String customerPhone;
     private String address;
+    private String addressDetail;
+    private Coords coords;
 }

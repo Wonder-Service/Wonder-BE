@@ -70,11 +70,16 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete) {
+    public List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete, Boolean isMyProfile) {
         List<Specification<User>> specification = new ArrayList<>();
         if (!StringUtils.isEmpty(username)) {
             specification.add((root, query, cb) -> {
                 return cb.like(cb.upper(root.get(User_.username)), "%" + username.toUpperCase().trim() + "%", '\\');
+            });
+        }
+        if(isMyProfile!=null) {
+            specification.add((root, query, cb) -> {
+                return cb.like(cb.upper(root.get(User_.username)), "%" + JWTVerifier.USERNAME.toUpperCase().trim() + "%", '\\');
             });
         }
         if (!StringUtils.isEmpty(role)) {
