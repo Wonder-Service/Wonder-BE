@@ -54,5 +54,13 @@ public class Order {
 
     @Column(name = "NAME_DEVICE")
     private String nameDevice;
-    
+
+    @Column(name = "LATITUDE")
+    private float lat;
+
+    @Column(name= "LONGITUDE")
+    private float lng;
+
+    @Column(name = "DETAIL_ADDRESS")
+    private String detailAddress;
 }

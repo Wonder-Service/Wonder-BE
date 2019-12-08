@@ -12,7 +12,7 @@ public interface UserService {
 
     User createUser(User user);
 
-    List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete);
+    List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete,Boolean isMyProfile);
 
     User getById(Long id);
 

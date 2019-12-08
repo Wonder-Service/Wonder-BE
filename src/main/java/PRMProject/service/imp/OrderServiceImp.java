@@ -7,6 +7,7 @@ import PRMProject.entity.User;
 import PRMProject.entity.User_;
 import PRMProject.entity.WorkDescription;
 import PRMProject.entity.specifications.SpecificationBuilder;
+import PRMProject.model.Coords;
 import PRMProject.model.OrderDTO;
 import PRMProject.model.RequestOrderDTO;
 import PRMProject.repository.OrderRepository;
@@ -92,14 +93,23 @@ public class OrderServiceImp implements OrderService {
             }
 
             Order order = Order.builder().address(requestOrderDTO.getAddress())
-                    .workDescription(workDescription).build();
+                    .detailAddress(requestOrderDTO.getDetailAddress())
+                    .workDescription(workDescription)
+                    .nameDevice(requestOrderDTO.getNameDevice())
+                    .lat(requestOrderDTO.getCoords().getLatitude())
+                    .lng(requestOrderDTO.getCoords().getLongitude())
+                    .build();
 
             order =  orderRepository.save(order);
 
             //dto for send notification
             OrderDTO dto = OrderDTO.builder().orderId(order.getId()).address(order.getAddress())
                     .description(order.getWorkDescription().getDescription())
-                    .customerPhone(user.getPhone()).build();
+                    .customerPhone(user.getPhone())
+                    .addressDetail(requestOrderDTO.getDetailAddress())
+                    .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
+
+                    .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {

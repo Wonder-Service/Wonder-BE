@@ -1,6 +1,7 @@
 package PRMProject.model;
 
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +19,8 @@ public class RequestOrderDTO {
     private String address;
     private long skillId;
     private String nameDevice;
+    @JsonValue
+    private Coords coords;
+    private String detailAddress;
 
 }
