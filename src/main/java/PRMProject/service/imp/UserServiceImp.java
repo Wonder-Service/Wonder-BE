@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.SetJoin;
@@ -69,7 +70,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll(String username, String role, Long skillId) {
+    public List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete) {
         List<Specification<User>> specification = new ArrayList<>();
         if (!StringUtils.isEmpty(username)) {
             specification.add((root, query, cb) -> {
@@ -85,6 +86,11 @@ public class UserServiceImp implements UserService {
             specification.add((root, query, cb) -> {
                 SetJoin<User, Skill> skill = root.join(User_.skills);
                 return cb.equal(skill.get(Skill_.ID), skillId);
+            });
+        }
+        if (!ObjectUtils.isEmpty(isDelete)) {
+            specification.add((root, query, cb) -> {
+                return cb.equal(root.get(User_.isDelete), isDelete);
             });
         }
         return userRepository.findAll(SpecificationBuilder.build(specification))

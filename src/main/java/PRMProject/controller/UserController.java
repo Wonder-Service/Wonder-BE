@@ -37,10 +37,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDto>> getAll(@RequestParam(required = false) String username,
                                                 @RequestParam(required = false) String role,
-                                                @RequestParam(required = false) Long skillId) {
+                                                @RequestParam(required = false) Long skillId,
+                                                @RequestParam(required = false) Boolean isDelete) {
         try {
             log.info("getAll");
-            List<UserDto> user = userService.getAll(username, role, skillId);
+            List<UserDto> user = userService.getAll(username, role, skillId, isDelete);
             return ResponseEntity.ok(user);
         } finally {
             log.info("getAll");

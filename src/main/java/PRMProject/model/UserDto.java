@@ -1,5 +1,6 @@
 package PRMProject.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,9 @@ public class UserDto {
     private String email;
     private String phone;
     private Set<SkillDto> skills;
+
+    @JsonProperty("isDelete")
     private boolean isDelete;
+
     private String deviceId;
 }
