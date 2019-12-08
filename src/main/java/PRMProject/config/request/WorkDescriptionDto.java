@@ -16,5 +16,5 @@ public class WorkDescriptionDto {
 
     private Long customerId;
 
-    private long skillId;
+    private Long skillId;
 }

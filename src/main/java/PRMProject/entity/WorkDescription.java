@@ -35,10 +35,10 @@ public class WorkDescription {
     private String description;
 
     @Column(name = "CUSTOMER_ID")
-    private long customerId;
+    private Long customerId;
 
     @Column(name = "SKILL_ID")
-    private long skillId;
+    private Long skillId;
 
     @CreatedDate
     @Column(name = "DATE_CREATED", nullable = false)

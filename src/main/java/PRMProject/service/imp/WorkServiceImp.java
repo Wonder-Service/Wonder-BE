@@ -3,16 +3,21 @@ package PRMProject.service.imp;
 import PRMProject.config.request.WorkDescriptionDto;
 import PRMProject.entity.User;
 import PRMProject.entity.WorkDescription;
+import PRMProject.entity.specifications.SpecificationBuilder;
 import PRMProject.repository.UserRepository;
 import PRMProject.repository.WorkRepository;
 import PRMProject.service.WorkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,5 +47,11 @@ public class WorkServiceImp implements WorkService {
         workDescription.setDescription(workDescriptionDto.getDescription());
         workDescription.setSkillId(workDescriptionDto.getSkillId());
         return workRepository.save(workDescription);
+    }
+
+    @Override
+    public List<WorkDescription> getAll() {
+        List<Specification<WorkDescription>> specification = new ArrayList<>();
+        return workRepository.findAll(SpecificationBuilder.build(specification)).stream().collect(Collectors.toList());
     }
 }
