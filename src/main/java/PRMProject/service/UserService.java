@@ -23,4 +23,6 @@ public interface UserService {
     void update(Long id, UserDto userDto);
 
     void addSkillToUser(Long userId, Long[] skillId);
+
+    void removeSkillOfUser(Long userId, Long[] skillId);
 }

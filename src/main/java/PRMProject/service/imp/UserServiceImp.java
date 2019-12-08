@@ -140,4 +140,19 @@ public class UserServiceImp implements UserService {
             userRepository.save(user.get());
         }
     }
+
+    @Override
+    public void removeSkillOfUser(Long userId, Long[] skillId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Skill> skill;
+        if (user.isPresent()) {
+            for (int i = 0; i < skillId.length; i++) {
+                skill = skillRepository.findById(skillId[i]);
+                if (skill.isPresent()) {
+                    user.get().getSkills().remove(skill.get());
+                }
+            }
+            userRepository.save(user.get());
+        }
+    }
 }
