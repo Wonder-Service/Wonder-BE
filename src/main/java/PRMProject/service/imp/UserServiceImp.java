@@ -23,10 +23,8 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -132,15 +130,13 @@ public class UserServiceImp implements UserService {
     public void addSkillToUser(Long userId, Long[] skillId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Skill> skill;
-        Set<Skill> setSkill = new HashSet<>();
         if (user.isPresent()) {
             for (int i = 0; i < skillId.length; i++) {
                 skill = skillRepository.findById(skillId[i]);
                 if (skill.isPresent()) {
-                    setSkill.add(skill.get());
+                    user.get().getSkills().add(skill.get());
                 }
             }
-            user.get().setSkills(setSkill);
             userRepository.save(user.get());
         }
     }
