@@ -77,9 +77,9 @@ public class UserServiceImp implements UserService {
                 return cb.like(cb.upper(root.get(User_.username)), "%" + username.toUpperCase().trim() + "%", '\\');
             });
         }
-        if(isMyProfile!=null) {
+        if (isMyProfile != null) {
             specification.add((root, query, cb) -> {
-                return cb.like(cb.upper(root.get(User_.username)), "%" + JWTVerifier.USERNAME.toUpperCase().trim() + "%", '\\');
+                return cb.equal(cb.upper(root.get(User_.username)), JWTVerifier.USERNAME.toUpperCase().trim());
             });
         }
         if (!StringUtils.isEmpty(role)) {
@@ -164,6 +164,14 @@ public class UserServiceImp implements UserService {
                 }
             }
             userRepository.save(user.get());
+        }
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            user.get().setDelete(true);
         }
     }
 }

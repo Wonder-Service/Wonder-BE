@@ -56,10 +56,10 @@ public class Order {
     private String nameDevice;
 
     @Column(name = "LATITUDE")
-    private float lat;
+    private Float lat;
 
     @Column(name= "LONGITUDE")
-    private float lng;
+    private Float lng;
 
     @Column(name = "DETAIL_ADDRESS")
     private String detailAddress;
