@@ -23,4 +23,5 @@ public class OrderDTO {
     private String address;
     private String addressDetail;
     private Coords coords;
+    private String deviceId;
 }

@@ -108,7 +108,7 @@ public class OrderServiceImp implements OrderService {
                     .customerPhone(user.getPhone())
                     .addressDetail(requestOrderDTO.getDetailAddress())
                     .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
-
+                    .deviceId(user.getDeviceId())
                     .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
