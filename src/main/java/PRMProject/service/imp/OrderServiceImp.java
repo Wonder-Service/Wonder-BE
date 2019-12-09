@@ -1,14 +1,19 @@
 package PRMProject.service.imp;
 
+import PRMProject.config.mapper.OrderMapper;
 import PRMProject.config.sercurity.JWTVerifier;
+import PRMProject.constant.Constants;
 import PRMProject.entity.Order;
 import PRMProject.entity.Order_;
 import PRMProject.entity.User;
 import PRMProject.entity.User_;
 import PRMProject.entity.WorkDescription;
+import PRMProject.entity.WorkDescription_;
 import PRMProject.entity.specifications.SpecificationBuilder;
 import PRMProject.model.Coords;
+import PRMProject.model.FeedbackOrderDTO;
 import PRMProject.model.OrderDTO;
+import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
 import PRMProject.repository.OrderRepository;
 import PRMProject.repository.UserRepository;
@@ -30,8 +35,6 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.criteria.Join;
 import javax.transaction.Transactional;
@@ -55,16 +58,29 @@ public class OrderServiceImp implements OrderService {
     @Autowired
     private WorkDescriptionRepository workDescriptionRepository;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
     @Override
-    public List<Order> getAll(String workerName) {
+    public List<OrderResultDTO> getAll() {
         List<Specification<Order>> specification = new ArrayList<>();
-        if (!StringUtils.isEmpty(workerName)) {
-            specification.add((root, query, cb) -> {
-                Join<Order, User> orders = root.join(Order_.worker);
-                return cb.like(cb.upper(orders.get(User_.username)), "%" + workerName + "%", '\\');
-            });
+
+        User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
+        switch (user.getRole()) {
+            case Constants.ROLE_WORKER:
+                specification.add((root, query, cb) -> {
+                    Join<Order, User> users = root.join(Order_.worker);
+                    return cb.like(cb.upper(users.get(User_.username)), user.getUsername());
+                });
+                break;
+            case Constants.ROLE_CUSTOMER:
+                specification.add((root, query, cb) -> {
+                    Join<Order, WorkDescription> workDescriptionJoin = root.join(Order_.workDescription);
+                    return cb.equal(workDescriptionJoin.get(WorkDescription_.customerId), user.getId());
+                });
+                break;
         }
-        return orderRepository.findAll(SpecificationBuilder.build(specification)).stream().collect(Collectors.toList());
+        return orderRepository.findAll(SpecificationBuilder.build(specification)).stream().map(orderMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -100,7 +116,7 @@ public class OrderServiceImp implements OrderService {
                     .lng(requestOrderDTO.getCoords().getLongitude())
                     .build();
 
-            order =  orderRepository.save(order);
+            order = orderRepository.save(order);
 
             //dto for send notification
             OrderDTO dto = OrderDTO.builder().orderId(order.getId()).address(order.getAddress())
@@ -143,7 +159,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order acceptOrder( Long orderId) throws Exception {
+    public Order acceptOrder(Long orderId) throws Exception {
         try {
             Order rs = null;
             log.info("accept Order Service");
@@ -166,6 +182,17 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
+    @Override
+    public void feedbackOrder(Long id, FeedbackOrderDTO feedbackOrderDTO) throws Exception {
+        Optional<Order> order = orderRepository.findById(id);
+        if(order.isPresent()){
+            order.get().setRate(feedbackOrderDTO.getRate());
+            order.get().setFeedback(feedbackOrderDTO.getFeedback());
+            orderRepository.save(order.get());
+        }
+        else throw new Exception();
+    }
+
     public void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
         String token = "ExponentPushToken[" + deviceId + "]";
@@ -181,7 +208,7 @@ public class OrderServiceImp implements OrderService {
         bodyStr.append("},");
         StringBuilder json = new StringBuilder();
         json.append("{\n" +
-                "\"to\":\""+ token+"\"," +
+                "\"to\":\"" + token + "\"," +
                 " \"title\":\"Thanh Dep Trai Notification\",\"subtitle\":\"Tao la so 1\",\"body\":\"Dep trai hoc gioi " +
                 "con nha giau va da tai\",\"data\":" +
                 new ObjectMapper().writeValueAsString(orderDTO) + ",\"category\":\"asd\"}");

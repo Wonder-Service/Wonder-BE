@@ -11,9 +11,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -39,6 +41,10 @@ public class WorkDescription {
 
     @Column(name = "SKILL_ID")
     private Long skillId;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            mappedBy = "workDescription")
+    private Order order;
 
     @CreatedDate
     @Column(name = "DATE_CREATED", nullable = false)
