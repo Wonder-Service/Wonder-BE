@@ -24,4 +24,6 @@ public class OrderDTO {
     private String addressDetail;
     private Coords coords;
     private String deviceId;
+    private String notificationType;
+
 }

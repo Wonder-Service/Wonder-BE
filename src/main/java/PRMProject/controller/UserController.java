@@ -54,10 +54,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getById(@PathVariable Long id) {
         try {
             log.info("getById");
-            User user = userService.getById(id);
+            UserDto user = userService.getById(id);
             return ResponseEntity.ok(user);
         } finally {
             log.info("getById");

@@ -103,9 +103,9 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User getById(Long id) {
+    public UserDto getById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.isPresent() ? user.get() : null;
+        return userMapper.toDto(user.get());
     }
 
     @Override
