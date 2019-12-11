@@ -1,6 +1,7 @@
 package PRMProject.service.imp;
 
 import PRMProject.config.mapper.OrderCancelTrackingMapper;
+import PRMProject.config.sercurity.JWTVerifier;
 import PRMProject.entity.Order;
 import PRMProject.entity.OrderCancelTracking;
 import PRMProject.entity.User;
@@ -43,8 +44,8 @@ public class OrderCancelTrackingServiceImp implements OrderCancelTrackingService
 
     @Override
     public OrderCancelTrackingDto cancelOrder(OrderCancelTrackingDto dto) {
-        Optional<User> user = userRepository.findById(dto.getUserId());
-        if (user.isPresent()) {
+        User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
+        if (user != null) {
             Optional<Order> order = orderRepository.findById(dto.getOrderId());
             if (order.isPresent()) {
                 OrderCancelTracking orderCancelTracking = orderCancelTrackingMapper.toEntity(dto);
