@@ -14,7 +14,7 @@ public interface UserService {
 
     List<UserDto> getAll(String username, String role, Long skillId, Boolean isDelete,Boolean isMyProfile);
 
-    User getById(Long id);
+    UserDto getById(Long id);
 
     List<Order> getOrderByUsername(String username);
 

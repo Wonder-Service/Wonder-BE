@@ -1,6 +1,7 @@
 package PRMProject.service.imp;
 
 import PRMProject.config.sercurity.JWTVerifier;
+import PRMProject.constant.Constant;
 import PRMProject.entity.Order;
 import PRMProject.entity.Order_;
 import PRMProject.entity.User;
@@ -109,6 +110,7 @@ public class OrderServiceImp implements OrderService {
                     .addressDetail(requestOrderDTO.getDetailAddress())
                     .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
                     .deviceId(user.getDeviceId())
+                    .notificationType(Constant.NOTIFICATION_TYPE_REQEST)
                     .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
@@ -168,17 +170,11 @@ public class OrderServiceImp implements OrderService {
 
     public void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
-        String token = "ExponentPushToken[" + deviceId + "]";
         HttpPost post = new HttpPost("https://expo.io/--/api/v2/push/send");
         StringBuilder bodyStr = new StringBuilder();
         OrderDTO orderDTO = (OrderDTO) data;
+        String token = "ExponentPushToken[" + deviceId + "]";
 
-        bodyStr.append("{");
-        bodyStr.append(" \"orderId\":" + orderDTO.getOrderId() + ",");
-        bodyStr.append(" \"description\":" + " \" " + orderDTO.getDescription() + "\"");
-        bodyStr.append("\"price\":" + orderDTO.getPrice());
-        bodyStr.append("\"Customer Phone\":" + "\"" + orderDTO.getCustomerPhone() + "\"");
-        bodyStr.append("},");
         StringBuilder json = new StringBuilder();
         json.append("{\n" +
                 "\"to\":\""+ token+"\"," +
