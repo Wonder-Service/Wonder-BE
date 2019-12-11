@@ -2,6 +2,8 @@ package PRMProject.controller;
 
 
 import PRMProject.entity.Order;
+import PRMProject.model.FeedbackOrderDTO;
+import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
 import PRMProject.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -30,10 +31,10 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAll(@RequestParam(required = false) String workerName) {
+    public ResponseEntity<List<OrderResultDTO>> getAll() {
         try {
             log.info("getAll");
-            List<Order> order = orderService.getAll(workerName);
+            List<OrderResultDTO> order = orderService.getAll();
             return ResponseEntity.ok(order);
         } finally {
             log.info("getAll");
@@ -81,4 +82,17 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/{id}/feedback")
+    public ResponseEntity feedbackOrder(@PathVariable Long id, @RequestBody FeedbackOrderDTO feedbackOrderDTO) {
+        try {
+            log.info("feedbackOrder");
+            orderService.feedbackOrder(id, feedbackOrderDTO);
+            return ResponseEntity.ok().body("Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("This Order not avaiable");
+        } finally {
+            log.info("feedbackOrder");
+        }
+    }
 }

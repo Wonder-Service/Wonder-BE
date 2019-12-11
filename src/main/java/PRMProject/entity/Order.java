@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
@@ -33,7 +34,7 @@ public class Order {
     @JoinColumn(name = "WORKER_ID")
     private User worker;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "WORK_DESCRIPTION_ID")
     private WorkDescription workDescription;
 
@@ -50,7 +51,7 @@ public class Order {
     private int rate;
 
     @Column(name = "FEEDBACK")
-    private boolean isDelete;
+    private String feedback;
 
     @Column(name = "NAME_DEVICE")
     private String nameDevice;

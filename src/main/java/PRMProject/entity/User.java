@@ -47,6 +47,9 @@ public class User {
     @Column(name = "PHONE")
     private String phone;
 
+    @Column(name = "FULLNAME")
+    private String fullname;
+
     @Column(name = "IS_DELETE")
     private boolean isDelete;
 
