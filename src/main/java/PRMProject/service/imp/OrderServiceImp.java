@@ -13,6 +13,7 @@ import PRMProject.entity.WorkDescription_;
 import PRMProject.entity.specifications.SpecificationBuilder;
 import PRMProject.model.Coords;
 import PRMProject.model.FeedbackOrderDTO;
+import PRMProject.model.NotificationCompleteDTO;
 import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
@@ -188,6 +189,34 @@ public class OrderServiceImp implements OrderService {
             orderRepository.save(order.get());
         }
         else throw new Exception();
+    }
+
+    @Override
+    public void completeOrder(Long id) throws Exception {
+        try{
+            log.info("BEGIN SERVICE Complete Order");
+            //get order
+            Order order = orderRepository.getOne(id);
+
+            if(order == null) {
+                throw new Exception();
+            }
+
+            order.setStatus(Constants.STATUS_COMPLETE);
+            //update order
+            orderRepository.save(order);
+            //get user device
+            Long userId = order.getWorkDescription().getCustomerId();
+
+            String deviceId = userRepository.getOne(userId).getDeviceId();
+
+
+            //send notification
+
+            sendNotification(deviceId,new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_COMPELETE));
+        }finally {
+            log.info("BEGIN SERVICE Complete Order");
+        }
     }
 
     public void sendNotification(String deviceId, Object data) throws IOException {
