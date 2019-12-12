@@ -28,5 +28,4 @@ public class OrderResultDTO {
     private int rate;
     private String status;
     private String feedback;
-    private Date dateCreated;
 }

@@ -22,6 +22,4 @@ public interface OrderService {
 
     void completeOrder(Long id) throws Exception;
 
-    void cancelOrder(Long id) throws Exception;
-
 }
