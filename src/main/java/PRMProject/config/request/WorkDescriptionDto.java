@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -17,4 +19,7 @@ public class WorkDescriptionDto {
     private Long customerId;
 
     private Long skillId;
+
+    private Date dateCreated;
+
 }

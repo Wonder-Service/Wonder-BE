@@ -2,6 +2,7 @@ package PRMProject.service.imp;
 
 import PRMProject.config.mapper.OrderCancelTrackingMapper;
 import PRMProject.config.sercurity.JWTVerifier;
+import PRMProject.constant.Constant;
 import PRMProject.entity.Order;
 import PRMProject.entity.OrderCancelTracking;
 import PRMProject.entity.User;
@@ -65,6 +66,10 @@ public class OrderCancelTrackingServiceImp implements OrderCancelTrackingService
                 int count = orderCancelTrackingRepository.countAllByDateCancelledAndUserId(dateCancel, orderCancelTracking.getUserId());
                 if (count >= TIME_COUNT_BLOCKED) {
                     userService.deleteUser(dto.getUserId());
+                } else {
+                    order.get().setStatus(Constant.NOTIFICATION_TYPE_CANCELED);
+                    orderRepository.save(order.get());
+
                 }
                 return orderCancelTrackingMapper.toDto(orderCancelTracking);
             }
