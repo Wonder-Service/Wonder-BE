@@ -21,7 +21,4 @@ public interface OrderService {
     void feedbackOrder(Long id, FeedbackOrderDTO feedbackOrderDTO) throws Exception;
 
     void completeOrder(Long id) throws Exception;
-
-    void cancelOrder(Long id) throws Exception;
-
 }
