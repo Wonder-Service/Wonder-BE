@@ -19,7 +19,7 @@ public class OrderResultDTO {
     private Long id;
     private WorkDescriptionDto workDescription;
     private BigDecimal totalCredit;
-    private String customerPhone;
+    private String nameDevice;
     private String address;
     private Float lat;
     private Float lng;
