@@ -110,4 +110,17 @@ public class OrderController {
             log.info("End completeOrder Controller");
         }
     }
+
+    @PutMapping("/{id}/status-canceled")
+    public ResponseEntity cancelOrder(@PathVariable Long id) {
+        try {
+            log.info("Begin completeOrder Controller");
+            orderService.cancelOrder(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        } finally {
+            log.info("End completeOrder Controller");
+        }
+    }
 }
