@@ -219,6 +219,31 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
+    @Override
+    public void cancelOrder(Long id) throws Exception {
+        try{
+            log.info("BEGIN SERVICE cancelOrder");
+            //get order
+            Order order = orderRepository.getOne(id);
+
+            if(order == null) {
+                throw new Exception();
+            }
+
+            order.setStatus(Constants.STATUS_CANCELED);
+            //update order
+            orderRepository.save(order);
+            //get user device
+            Long userId = order.getWorkDescription().getCustomerId();
+
+            String deviceId = userRepository.getOne(userId).getDeviceId();
+            //send notification
+            sendNotification(deviceId,new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_CANCELED));
+        }finally {
+            log.info("BEGIN SERVICE cancelOrder");
+        }
+    }
+
     public void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
         String token = "ExponentPushToken[" + deviceId + "]";
