@@ -85,13 +85,13 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order getById(Long id) {
+    public OrderResultDTO getById(Long id) {
         Optional<Order> order = orderRepository.findById(id);
-        return order.isPresent() ? order.get() : null;
+        return order.isPresent() ? orderMapper.toDto(order.get()) : null;
     }
 
     @Override
-    public Order requestOrder(RequestOrderDTO requestOrderDTO) throws Exception {
+    public OrderDTO requestOrder(RequestOrderDTO requestOrderDTO) throws Exception {
         try {
             log.info("Begin request Order");
             //create order
@@ -149,11 +149,7 @@ public class OrderServiceImp implements OrderService {
 
                 }
             });
-
-
-            Order rs = new Order();
-
-            return rs;
+            return dto;
         } finally {
             log.info("End request Order");
         }
