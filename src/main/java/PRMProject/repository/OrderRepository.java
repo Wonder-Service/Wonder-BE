@@ -10,4 +10,8 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
     List<Order> getByWorker_Username(String username);
+
+    List<Order> getAllByWorker_Id(Long id);
+
+    List<Order> getAllByWorkDescription_CustomerId(Long id);
 }

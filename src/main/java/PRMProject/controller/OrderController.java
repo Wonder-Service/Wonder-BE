@@ -3,6 +3,7 @@ package PRMProject.controller;
 
 import PRMProject.entity.Order;
 import PRMProject.model.FeedbackOrderDTO;
+import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
 import PRMProject.service.OrderService;
@@ -42,10 +43,10 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getById(@PathVariable Long id) {
+    public ResponseEntity<OrderResultDTO> getById(@PathVariable Long id) {
         try {
             log.info("getById");
-            Order order = orderService.getById(id);
+            OrderResultDTO order = orderService.getById(id);
             return ResponseEntity.ok(order);
         } finally {
             log.info("getById");
@@ -53,10 +54,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> requestOrder(@RequestBody RequestOrderDTO order) {
+    public ResponseEntity<OrderDTO> requestOrder(@RequestBody RequestOrderDTO order) {
         try {
             log.info("requestOrder");
-            Order rs = orderService.requestOrder(order);
+            OrderDTO rs = orderService.requestOrder(order);
             return ResponseEntity.ok(rs);
         } catch (IOException e) {
             e.printStackTrace();

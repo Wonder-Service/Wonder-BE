@@ -2,6 +2,7 @@ package PRMProject.service.imp;
 
 import PRMProject.config.mapper.OrderMapper;
 import PRMProject.config.sercurity.JWTVerifier;
+import PRMProject.constant.Constant;
 import PRMProject.constant.Constants;
 import PRMProject.entity.Order;
 import PRMProject.entity.Order_;
@@ -84,13 +85,13 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order getById(Long id) {
+    public OrderResultDTO getById(Long id) {
         Optional<Order> order = orderRepository.findById(id);
-        return order.isPresent() ? order.get() : null;
+        return order.isPresent() ? orderMapper.toDto(order.get()) : null;
     }
 
     @Override
-    public Order requestOrder(RequestOrderDTO requestOrderDTO) throws Exception {
+    public OrderDTO requestOrder(RequestOrderDTO requestOrderDTO) throws Exception {
         try {
             log.info("Begin request Order");
             //create order
@@ -148,11 +149,7 @@ public class OrderServiceImp implements OrderService {
 
                 }
             });
-
-
-            Order rs = new Order();
-
-            return rs;
+            return dto;
         } finally {
             log.info("End request Order");
         }
@@ -199,13 +196,6 @@ public class OrderServiceImp implements OrderService {
         HttpPost post = new HttpPost("https://expo.io/--/api/v2/push/send");
         StringBuilder bodyStr = new StringBuilder();
         OrderDTO orderDTO = (OrderDTO) data;
-
-        bodyStr.append("{");
-        bodyStr.append(" \"orderId\":" + orderDTO.getOrderId() + ",");
-        bodyStr.append(" \"description\":" + " \" " + orderDTO.getDescription() + "\"");
-        bodyStr.append("\"price\":" + orderDTO.getPrice());
-        bodyStr.append("\"Customer Phone\":" + "\"" + orderDTO.getCustomerPhone() + "\"");
-        bodyStr.append("},");
         StringBuilder json = new StringBuilder();
         json.append("{\n" +
                 "\"to\":\"" + token + "\"," +

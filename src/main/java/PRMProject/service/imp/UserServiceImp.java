@@ -2,6 +2,7 @@ package PRMProject.service.imp;
 
 import PRMProject.config.mapper.UserMapper;
 import PRMProject.config.sercurity.JWTVerifier;
+import PRMProject.constant.Constants;
 import PRMProject.entity.Order;
 import PRMProject.entity.Skill;
 import PRMProject.entity.Skill_;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -103,9 +105,30 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User getById(Long id) {
+    public UserDto getById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.isPresent() ? user.get() : null;
+        UserDto result = userMapper.toDto(user.get());
+        List<Order> orders = new ArrayList<>();
+        switch (result.getRole()) {
+            case Constants.ROLE_CUSTOMER:
+                orders = orderRepository.getAllByWorkDescription_CustomerId(id);
+                break;
+
+            case Constants.ROLE_WORKER:
+                orders = orderRepository.getAllByWorker_Id(id);
+                break;
+
+            default:
+                break;
+        }
+        if (!CollectionUtils.isEmpty(orders)) {
+            int rateSum = 0;
+            for (Order order : orders) {
+                rateSum += order.getRate();
+            }
+            result.setRate(rateSum / orders.size());
+        }
+        return result;
     }
 
     @Override

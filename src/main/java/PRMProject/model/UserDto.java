@@ -28,4 +28,5 @@ public class UserDto {
     private boolean isDelete;
 
     private String deviceId;
+    private float rate;
 }

@@ -2,6 +2,7 @@ package PRMProject.service;
 
 import PRMProject.entity.Order;
 import PRMProject.model.FeedbackOrderDTO;
+import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
 
@@ -11,9 +12,9 @@ public interface OrderService {
 
     List<OrderResultDTO> getAll();
 
-    Order getById(Long id);
+    OrderResultDTO getById(Long id);
 
-    Order requestOrder(RequestOrderDTO requestOrderDTO) throws Exception;
+    OrderDTO requestOrder(RequestOrderDTO requestOrderDTO) throws Exception;
 
     Order acceptOrder(Long orderId) throws Exception;
 
