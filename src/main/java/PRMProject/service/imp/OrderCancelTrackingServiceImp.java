@@ -6,6 +6,7 @@ import PRMProject.constant.Constant;
 import PRMProject.entity.Order;
 import PRMProject.entity.OrderCancelTracking;
 import PRMProject.entity.User;
+import PRMProject.model.NotificationCompleteDTO;
 import PRMProject.model.OrderCancelTrackingDto;
 import PRMProject.repository.OrderCancelTrackingRepository;
 import PRMProject.repository.OrderRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,12 +46,13 @@ public class OrderCancelTrackingServiceImp implements OrderCancelTrackingService
     private UserService userService;
 
     @Override
-    public OrderCancelTrackingDto cancelOrder(OrderCancelTrackingDto dto) {
+    public OrderCancelTrackingDto cancelOrder(OrderCancelTrackingDto dto) throws IOException {
         User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
         if (user != null) {
             Optional<Order> order = orderRepository.findById(dto.getOrderId());
             if (order.isPresent()) {
                 OrderCancelTracking orderCancelTracking = orderCancelTrackingMapper.toEntity(dto);
+                orderCancelTracking.setUserId(user.getId());
                 orderCancelTracking = orderCancelTrackingRepository.save(orderCancelTracking);
 
                 //check to block user
@@ -67,9 +70,9 @@ public class OrderCancelTrackingServiceImp implements OrderCancelTrackingService
                 if (count >= TIME_COUNT_BLOCKED) {
                     userService.deleteUser(dto.getUserId());
                 } else {
-                    order.get().setStatus(Constant.NOTIFICATION_TYPE_CANCELED);
+                    order.get().setStatus(Constant.STATUS_CANCELED);
                     orderRepository.save(order.get());
-
+                    OrderServiceImp.sendNotification(user.getDeviceId(), new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_CANCELED));
                 }
                 return orderCancelTrackingMapper.toDto(orderCancelTracking);
             }
