@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 @Getter
@@ -27,4 +28,5 @@ public class OrderResultDTO {
     private int rate;
     private String status;
     private String feedback;
+    private Date dateCreated;
 }

@@ -1,6 +1,7 @@
 package PRMProject.controller;
 
 
+import PRMProject.constant.Constant;
 import PRMProject.entity.Order;
 import PRMProject.model.FeedbackOrderDTO;
 import PRMProject.model.OrderDTO;
@@ -94,6 +95,19 @@ public class OrderController {
             return ResponseEntity.badRequest().body("This Order not avaiable");
         } finally {
             log.info("feedbackOrder");
+        }
+    }
+
+    @PutMapping("/{id}/status-complete")
+    public ResponseEntity completeOrder(@PathVariable Long id) {
+        try {
+            log.info("Begin completeOrder Controller");
+            orderService.completeOrder(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        } finally {
+            log.info("End completeOrder Controller");
         }
     }
 }
