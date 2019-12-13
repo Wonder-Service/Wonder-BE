@@ -116,6 +116,7 @@ public class OrderServiceImp implements OrderService {
                     .nameDevice(requestOrderDTO.getNameDevice())
                     .lat(requestOrderDTO.getCoords().getLatitude())
                     .lng(requestOrderDTO.getCoords().getLongitude())
+                    .status(Constant.STATUS_PROCESSING)
                     .build();
 
             order = orderRepository.save(order);
@@ -202,7 +203,7 @@ public class OrderServiceImp implements OrderService {
                 throw new Exception();
             }
 
-            order.setStatus(Constants.STATUS_COMPLETE);
+            order.setStatus(Constant.STATUS_COMPLETED);
             //update order
             orderRepository.save(order);
             //get user device
@@ -219,7 +220,7 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
-    public void sendNotification(String deviceId, Object data) throws IOException {
+    public static void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
         String token = "ExponentPushToken[" + deviceId + "]";
         HttpPost post = new HttpPost("https://expo.io/--/api/v2/push/send");
