@@ -156,7 +156,18 @@ public class UserServiceImp implements UserService {
     public void update(Long id, UserDto userDto) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            user.get().setDelete(userDto.isDelete());
+            if (!ObjectUtils.isEmpty(userDto.isDelete())) {
+                user.get().setDelete(userDto.isDelete());
+            }
+            if (!ObjectUtils.isEmpty(userDto.getEmail())) {
+                user.get().setEmail(userDto.getEmail());
+            }
+            if (!ObjectUtils.isEmpty(userDto.getPhone())) {
+                user.get().setPhone(userDto.getPhone());
+            }
+            if (!ObjectUtils.isEmpty(userDto.getAddress())) {
+                user.get().setAddress(userDto.getAddress());
+            }
         }
     }
 

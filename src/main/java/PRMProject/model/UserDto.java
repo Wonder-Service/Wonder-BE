@@ -22,6 +22,7 @@ public class UserDto {
     private String email;
     private String phone;
     private String fullname;
+    private String address;
     private Set<SkillDto> skills;
 
     @JsonProperty("isDelete")
