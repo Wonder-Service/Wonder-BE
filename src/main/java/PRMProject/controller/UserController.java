@@ -1,6 +1,7 @@
 package PRMProject.controller;
 
 
+import PRMProject.config.sercurity.JWTVerifier;
 import PRMProject.entity.Order;
 import PRMProject.entity.User;
 import PRMProject.model.DeviceDTO;
@@ -134,6 +135,18 @@ public class UserController {
             return new ResponseEntity(user, HttpStatus.OK);
         } finally {
             log.info("saveDeviceId");
+        }
+    }
+
+    @GetMapping("/jwt")
+    public ResponseEntity getUserProfileByJWT() {
+        try{
+            log.info("BEGIN getUserProfileByJWT");
+
+            List<UserDto> users = userService.getAll(JWTVerifier.USERNAME,null,null,null,null);
+            return new ResponseEntity(users, HttpStatus.OK);
+        } finally {
+            log.info("END getUserProfileByJWT");
         }
     }
 
