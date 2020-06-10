@@ -10,7 +10,9 @@ import PRMProject.model.RequestOrderDTO;
 import PRMProject.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,6 +110,17 @@ public class OrderController {
             return ResponseEntity.badRequest().build();
         } finally {
             log.info("End completeOrder Controller");
+        }
+    }
+
+    @GetMapping("/jwt")
+    public ResponseEntity getOrderByJWT() {
+        try {
+            log.info("Begin getOrderByJWT Controller");
+            List<OrderResultDTO> rs = orderService.getAllOrderByJWT();
+            return ResponseEntity.ok(rs);
+        } finally {
+            log.info("End getOrderByJWT Controller");
         }
     }
 }

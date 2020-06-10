@@ -128,6 +128,7 @@ public class OrderServiceImp implements OrderService {
                     .addressDetail(requestOrderDTO.getDetailAddress())
                     .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
                     .deviceId(user.getDeviceId())
+                    .notificationType(Constant.NOTIFICATION_TYPE_REQEST)
                     .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
@@ -217,6 +218,18 @@ public class OrderServiceImp implements OrderService {
             sendNotification(deviceId,new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_COMPELETE));
         }finally {
             log.info("BEGIN SERVICE Complete Order");
+        }
+    }
+
+    @Override
+    public List<OrderResultDTO> getAllOrderByJWT() {
+        try {
+            log.info("BEGIN getAllOrderByService");
+            List<OrderResultDTO> rs;
+            rs = orderRepository.getAllByCreateBy_Username(JWTVerifier.USERNAME).stream().map(orderMapper::toDto).collect(Collectors.toList());
+            return rs;
+        } finally {
+            log.info("End getAllOrderByService");
         }
     }
 

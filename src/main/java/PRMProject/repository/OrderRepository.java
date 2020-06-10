@@ -14,4 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     List<Order> getAllByWorker_Id(Long id);
 
     List<Order> getAllByWorkDescription_CustomerId(Long id);
+
+    List<Order> getAllByCreateBy_Username(String username);
 }

@@ -22,4 +22,6 @@ public interface OrderService {
 
     void completeOrder(Long id) throws Exception;
 
+    List<OrderResultDTO> getAllOrderByJWT();
+
 }

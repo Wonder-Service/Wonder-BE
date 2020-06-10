@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -64,4 +65,11 @@ public class Order {
 
     @Column(name = "DETAIL_ADDRESS")
     private String detailAddress;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "create_by")
+    private User createBy;
+
+    @Column(name = "create_at")
+    private Date createAt;
 }

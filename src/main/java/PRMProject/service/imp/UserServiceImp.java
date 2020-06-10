@@ -166,7 +166,7 @@ public class UserServiceImp implements UserService {
                 user.get().setAddress(userDto.getAddress());
             }
             if (!ObjectUtils.isEmpty(userDto.getFullname())) {
-                user.get().setAddress(userDto.getFullname());
+                user.get().setFullname(userDto.getFullname());
             }
             userRepository.save(user.get());
         }
