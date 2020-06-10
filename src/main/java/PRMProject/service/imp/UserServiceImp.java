@@ -156,9 +156,6 @@ public class UserServiceImp implements UserService {
     public void update(Long id, UserDto userDto) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            if (!ObjectUtils.isEmpty(userDto.isDelete())) {
-                user.get().setDelete(userDto.isDelete());
-            }
             if (!ObjectUtils.isEmpty(userDto.getEmail())) {
                 user.get().setEmail(userDto.getEmail());
             }
@@ -168,6 +165,10 @@ public class UserServiceImp implements UserService {
             if (!ObjectUtils.isEmpty(userDto.getAddress())) {
                 user.get().setAddress(userDto.getAddress());
             }
+            if (!ObjectUtils.isEmpty(userDto.getFullname())) {
+                user.get().setAddress(userDto.getFullname());
+            }
+            userRepository.save(user.get());
         }
     }
 
