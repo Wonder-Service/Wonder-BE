@@ -56,6 +56,7 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.DELETE, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/login", "/api/users/create").permitAll()
                 .antMatchers(HttpMethod.GET, "api/users", "api/orders/*").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTGenerator(authenticationManager()))
@@ -72,7 +73,5 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
 //                http.formLogin().init(http);
 //        ;
     }
-
-
 }
 

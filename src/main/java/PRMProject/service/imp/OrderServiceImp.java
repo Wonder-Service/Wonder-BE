@@ -129,6 +129,7 @@ public class OrderServiceImp implements OrderService {
                     .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
                     .deviceId(user.getDeviceId())
                     .notificationType(Constant.NOTIFICATION_TYPE_REQEST)
+                    .customerName(user.getFullname())
                     .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
@@ -174,7 +175,7 @@ public class OrderServiceImp implements OrderService {
             order.setWorker(worker);
             orderRepository.save(order);
 
-//            sendNotification(worker.getDeviceId(), "we found a worker");
+            sendNotification(worker.getDeviceId(), OrderDTO.builder().notificationType(Constant.NOTIFICATION_TYPE_ACCEPT));
 
             return rs;
         } finally {
@@ -215,7 +216,7 @@ public class OrderServiceImp implements OrderService {
 
             //send notification
 
-            sendNotification(deviceId,new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_COMPELETE));
+            sendNotification(deviceId, OrderDTO.builder().notificationType(Constant.NOTIFICATION_TYPE_COMPELETE));
         }finally {
             log.info("BEGIN SERVICE Complete Order");
         }

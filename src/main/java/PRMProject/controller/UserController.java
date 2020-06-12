@@ -28,7 +28,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -95,7 +94,13 @@ public class UserController {
             if (ObjectUtils.isNotEmpty(user)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).role(userDto.getRole()).build();
+            user = User.builder().username(userDto.getUsername())
+                    .password(userDto.getPassword())
+                    .role(userDto.getRole())
+                    .email(userDto.getEmail())
+                    .address(userDto.getAddress())
+                    .phone(userDto.getPhone())
+                    .build();
             User createdUser = userService.createUser(user);
             return ResponseEntity.ok(createdUser);
         } finally {
