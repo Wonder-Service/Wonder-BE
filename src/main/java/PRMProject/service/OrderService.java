@@ -16,7 +16,7 @@ public interface OrderService {
 
     OrderDTO requestOrder(RequestOrderDTO requestOrderDTO) throws Exception;
 
-    Order acceptOrder(Long orderId) throws Exception;
+    Order acceptOrder(Long orderId, Long workerId) throws Exception;
 
     void feedbackOrder(Long id, FeedbackOrderDTO feedbackOrderDTO) throws Exception;
 

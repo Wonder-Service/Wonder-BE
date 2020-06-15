@@ -27,4 +27,6 @@ public interface UserService {
     void removeSkillOfUser(Long userId, Long[] skillId);
 
     void deleteUser(Long userId);
+
+    void deleteUsers(List<Long> ids);
 }

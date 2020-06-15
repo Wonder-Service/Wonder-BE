@@ -7,6 +7,7 @@ import PRMProject.model.FeedbackOrderDTO;
 import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
+import PRMProject.model.WorkderDto;
 import PRMProject.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +74,10 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity acceptOrder(@PathVariable Long id) {
+    public ResponseEntity acceptOrder(@PathVariable Long id, @RequestBody WorkderDto workderDto) {
         try {
             log.info("requestOrder");
-            Order rs = orderService.acceptOrder(id);
+            Order rs = orderService.acceptOrder(id,workderDto.getWorkerId());
             return ResponseEntity.ok(rs);
         } catch (Exception e) {
             e.printStackTrace();

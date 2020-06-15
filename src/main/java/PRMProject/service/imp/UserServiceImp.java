@@ -209,4 +209,8 @@ public class UserServiceImp implements UserService {
             user.get().setDelete(true);
         }
     }
+
+    public void deleteUsers(List<Long> ids) {
+        userRepository.deleteUsersByIdIn(ids);
+    }
 }

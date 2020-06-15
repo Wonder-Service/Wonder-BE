@@ -100,6 +100,7 @@ public class UserController {
                     .email(userDto.getEmail())
                     .address(userDto.getAddress())
                     .phone(userDto.getPhone())
+                    .fullname(userDto.getFullname())
                     .build();
             User createdUser = userService.createUser(user);
             return ResponseEntity.ok(createdUser);
@@ -145,13 +146,26 @@ public class UserController {
 
     @GetMapping("/jwt")
     public ResponseEntity getUserProfileByJWT() {
-        try{
+        try {
             log.info("BEGIN getUserProfileByJWT");
 
-            List<UserDto> users = userService.getAll(JWTVerifier.USERNAME,null,null,null,null);
+            List<UserDto> users = userService.getAll(JWTVerifier.USERNAME, null, null, null, null);
             return new ResponseEntity(users, HttpStatus.OK);
         } finally {
             log.info("END getUserProfileByJWT");
+        }
+    }
+
+    @DeleteMapping("/{ids}")
+    public ResponseEntity deleteUser(@PathVariable List<Long> ids) {
+        try {
+            log.info("Begin Controller Delete User");
+            userService.deleteUsers(ids);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().build();
+        } finally {
+            log.info("End Controller Delete User");
         }
     }
 
