@@ -172,6 +172,7 @@ public class OrderServiceImp implements OrderService {
 
             User worker = userRepository.getOne(workerId);
             order.setWorker(worker);
+            order.setStatus(Constant.NOTIFICATION_TYPE_ACCEPT);
             orderRepository.save(order);
 
             sendNotification(worker.getDeviceId(), OrderDTO.builder()
