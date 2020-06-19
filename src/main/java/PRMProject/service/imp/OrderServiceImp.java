@@ -227,8 +227,9 @@ public class OrderServiceImp implements OrderService {
     public List<OrderResultDTO> getAllOrderByJWT() {
         try {
             log.info("BEGIN getAllOrderByService");
+            User currentUser = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
             List<OrderResultDTO> rs;
-            rs = orderRepository.getAllByCreateBy_Username(JWTVerifier.USERNAME).stream().map(orderMapper::toDto).collect(Collectors.toList());
+            rs = orderRepository.getAllByWorkDescription_CustomerId(currentUser.getId()).stream().map(orderMapper::toDto).collect(Collectors.toList());
             return rs;
         } finally {
             log.info("End getAllOrderByService");
