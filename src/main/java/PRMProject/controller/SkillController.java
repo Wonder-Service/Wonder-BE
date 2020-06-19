@@ -2,6 +2,7 @@ package PRMProject.controller;
 
 
 import PRMProject.entity.Skill;
+import PRMProject.model.SkillDto;
 import PRMProject.repository.UserRepository;
 import PRMProject.service.SkillService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,10 @@ public class SkillController {
     UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<List<Skill>> getAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<SkillDto>> getAll(@RequestParam(required = false) String name) {
         try {
             log.info("getAll");
-            List<Skill> skill = skillService.getAll(name);
+            List<SkillDto> skill = skillService.getAll(name);
             return ResponseEntity.ok(skill);
         } finally {
             log.info("getAll");

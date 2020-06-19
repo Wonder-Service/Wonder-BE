@@ -6,6 +6,7 @@ import PRMProject.entity.Order;
 import PRMProject.entity.User;
 import PRMProject.model.DeviceDTO;
 import PRMProject.model.UserDto;
+import PRMProject.model.UserRegisterDto;
 import PRMProject.repository.UserRepository;
 import PRMProject.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -87,22 +88,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity createAccount(@RequestBody UserDto userDto) {
+    public ResponseEntity createAccount(@RequestBody UserRegisterDto userDto) {
         try {
             log.info("createAccount");
             User user = userRepository.findUserByUsernameIgnoreCase(userDto.getUsername());
             if (ObjectUtils.isNotEmpty(user)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            user = User.builder().username(userDto.getUsername())
-                    .password(userDto.getPassword())
-                    .role(userDto.getRole())
-                    .email(userDto.getEmail())
-                    .address(userDto.getAddress())
-                    .phone(userDto.getPhone())
-                    .fullname(userDto.getFullname())
-                    .build();
-            User createdUser = userService.createUser(user);
+            UserDto createdUser = userService.createUser(userDto);
             return ResponseEntity.ok(createdUser);
         } finally {
             log.info("createAccount");

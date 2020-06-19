@@ -10,6 +10,7 @@ import PRMProject.entity.User;
 import PRMProject.entity.User_;
 import PRMProject.entity.specifications.SpecificationBuilder;
 import PRMProject.model.UserDto;
+import PRMProject.model.UserRegisterDto;
 import PRMProject.repository.OrderRepository;
 import PRMProject.repository.SkillRepository;
 import PRMProject.repository.UserRepository;
@@ -28,6 +29,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -60,12 +62,22 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
+    public UserDto createUser(UserRegisterDto userDto) {
         try {
             log.info("createUser");
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+            Set<Skill> skills =skillRepository.findAllByIdIn(userDto.getSkills());
+            User user = User.builder().username(userDto.getUsername())
+                    .password(userDto.getPassword())
+                    .role(userDto.getRole())
+                    .email(userDto.getEmail())
+                    .address(userDto.getAddress())
+                    .phone(userDto.getPhone())
+                    .fullname(userDto.getFullname())
+                    .skills(skills)
+                    .build();
             userRepository.save(user);
-            return user;
+            return userMapper.toDto(user);
         } finally {
             log.info("createUser");
         }
