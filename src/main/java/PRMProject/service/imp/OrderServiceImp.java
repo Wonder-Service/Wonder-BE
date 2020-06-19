@@ -128,6 +128,8 @@ public class OrderServiceImp implements OrderService {
                     .addressDetail(requestOrderDTO.getDetailAddress())
                     .coords(new Coords(requestOrderDTO.getCoords().getLatitude(), requestOrderDTO.getCoords().getLongitude()))
                     .deviceId(user.getDeviceId())
+                    .notificationType(Constant.NOTIFICATION_TYPE_REQEST)
+                    .customerName(user.getFullname())
                     .build();
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/");
@@ -158,7 +160,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order acceptOrder(Long orderId) throws Exception {
+    public Order acceptOrder(Long orderId, Long workerId) throws Exception {
         try {
             Order rs = null;
             log.info("accept Order Service");
@@ -168,12 +170,13 @@ public class OrderServiceImp implements OrderService {
                 throw new Exception();
             }
 
-            User worker = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
-
+            User worker = userRepository.getOne(workerId);
             order.setWorker(worker);
+            order.setStatus(Constant.NOTIFICATION_TYPE_ACCEPT);
             orderRepository.save(order);
 
-//            sendNotification(worker.getDeviceId(), "we found a worker");
+            sendNotification(worker.getDeviceId(), OrderDTO.builder()
+                    .coords(new Coords(order.getLat(),order.getLng())).notificationType(Constant.NOTIFICATION_TYPE_ACCEPT).build());
 
             return rs;
         } finally {
@@ -214,9 +217,21 @@ public class OrderServiceImp implements OrderService {
 
             //send notification
 
-            sendNotification(deviceId,new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_COMPELETE));
+            sendNotification(deviceId, OrderDTO.builder().notificationType(Constant.NOTIFICATION_TYPE_COMPELETE).build());
         }finally {
             log.info("BEGIN SERVICE Complete Order");
+        }
+    }
+
+    @Override
+    public List<OrderResultDTO> getAllOrderByJWT() {
+        try {
+            log.info("BEGIN getAllOrderByService");
+            List<OrderResultDTO> rs;
+            rs = orderRepository.getAllByCreateBy_Username(JWTVerifier.USERNAME).stream().map(orderMapper::toDto).collect(Collectors.toList());
+            return rs;
+        } finally {
+            log.info("End getAllOrderByService");
         }
     }
 

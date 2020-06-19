@@ -6,6 +6,7 @@ import PRMProject.entity.Order;
 import PRMProject.entity.User;
 import PRMProject.model.DeviceDTO;
 import PRMProject.model.UserDto;
+import PRMProject.model.UserRegisterDto;
 import PRMProject.repository.UserRepository;
 import PRMProject.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -88,15 +88,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity createAccount(@RequestBody UserDto userDto) {
+    public ResponseEntity createAccount(@RequestBody UserRegisterDto userDto) {
         try {
             log.info("createAccount");
             User user = userRepository.findUserByUsernameIgnoreCase(userDto.getUsername());
             if (ObjectUtils.isNotEmpty(user)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).role(userDto.getRole()).build();
-            User createdUser = userService.createUser(user);
+            UserDto createdUser = userService.createUser(userDto);
             return ResponseEntity.ok(createdUser);
         } finally {
             log.info("createAccount");
@@ -140,13 +139,26 @@ public class UserController {
 
     @GetMapping("/jwt")
     public ResponseEntity getUserProfileByJWT() {
-        try{
+        try {
             log.info("BEGIN getUserProfileByJWT");
 
-            List<UserDto> users = userService.getAll(JWTVerifier.USERNAME,null,null,null,null);
+            List<UserDto> users = userService.getAll(JWTVerifier.USERNAME, null, null, null, null);
             return new ResponseEntity(users, HttpStatus.OK);
         } finally {
             log.info("END getUserProfileByJWT");
+        }
+    }
+
+    @DeleteMapping("/{ids}")
+    public ResponseEntity deleteUser(@PathVariable List<Long> ids) {
+        try {
+            log.info("Begin Controller Delete User");
+            userService.deleteUsers(ids);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().build();
+        } finally {
+            log.info("End Controller Delete User");
         }
     }
 

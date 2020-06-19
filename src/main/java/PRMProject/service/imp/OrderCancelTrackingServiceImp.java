@@ -8,6 +8,7 @@ import PRMProject.entity.OrderCancelTracking;
 import PRMProject.entity.User;
 import PRMProject.model.NotificationCompleteDTO;
 import PRMProject.model.OrderCancelTrackingDto;
+import PRMProject.model.OrderDTO;
 import PRMProject.repository.OrderCancelTrackingRepository;
 import PRMProject.repository.OrderRepository;
 import PRMProject.repository.UserRepository;
@@ -72,7 +73,7 @@ public class OrderCancelTrackingServiceImp implements OrderCancelTrackingService
                 } else {
                     order.get().setStatus(Constant.STATUS_CANCELED);
                     orderRepository.save(order.get());
-                    OrderServiceImp.sendNotification(user.getDeviceId(), new NotificationCompleteDTO(Constant.NOTIFICATION_TYPE_CANCELED));
+                    OrderServiceImp.sendNotification(user.getDeviceId(), OrderDTO.builder().notificationType(Constant.NOTIFICATION_TYPE_CANCELED).build());
                 }
                 return orderCancelTrackingMapper.toDto(orderCancelTracking);
             }

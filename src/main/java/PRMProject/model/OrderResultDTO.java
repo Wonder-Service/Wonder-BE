@@ -28,4 +28,5 @@ public class OrderResultDTO {
     private int rate;
     private String status;
     private String feedback;
+    private Long workerId;
 }
