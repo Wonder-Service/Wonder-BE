@@ -24,4 +24,5 @@ public interface OrderService {
 
     List<OrderResultDTO> getAllOrderByJWT();
 
+    List<OrderResultDTO> getAllOrderByJWTSkills();
 }
