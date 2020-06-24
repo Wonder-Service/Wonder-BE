@@ -46,6 +46,17 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/skills/jwt")
+    public ResponseEntity<List<OrderResultDTO>> getOrdersByJwtAndSkils() {
+        try {
+            log.info("getOrdersByJwtAndSkils");
+            List<OrderResultDTO> order = orderService.getAllOrderByJWTSkills();
+            return ResponseEntity.ok(order);
+        } finally {
+            log.info("getOrdersByJwtAndSkils");
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<OrderResultDTO> getById(@PathVariable Long id) {
         try {

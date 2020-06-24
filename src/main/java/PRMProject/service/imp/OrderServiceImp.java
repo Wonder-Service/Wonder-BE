@@ -13,7 +13,6 @@ import PRMProject.entity.WorkDescription_;
 import PRMProject.entity.specifications.SpecificationBuilder;
 import PRMProject.model.Coords;
 import PRMProject.model.FeedbackOrderDTO;
-import PRMProject.model.NotificationCompleteDTO;
 import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import PRMProject.model.RequestOrderDTO;
@@ -233,6 +232,20 @@ public class OrderServiceImp implements OrderService {
             return rs;
         } finally {
             log.info("End getAllOrderByService");
+        }
+    }
+
+    @Override
+    public List<OrderResultDTO> getAllOrderByJWTSkills() {
+        try {
+            log.info("BEGIN getAllOrderByJWTSkills");
+            List<OrderResultDTO> rs;
+            User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
+
+            rs = orderRepository.getAllByStatusAndWorkDescription_SkillIdIn(Constant.STATUS_PROCESSING, user.getSkills().stream().map(item -> item.getId()).collect(Collectors.toSet())).stream().map(orderMapper::toDto).collect(Collectors.toList());
+            return rs;
+        } finally {
+            log.info("End getAllOrderByJWTSkills");
         }
     }
 
