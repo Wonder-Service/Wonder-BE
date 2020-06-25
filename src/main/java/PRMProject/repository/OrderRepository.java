@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
-    List<Order> getByWorker_Username(String username);
+    List<Order> findAllByWorker_Username(String username);
 
     List<Order> getAllByWorker_Id(Long id);
 

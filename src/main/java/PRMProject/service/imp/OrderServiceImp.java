@@ -236,6 +236,18 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public List<OrderResultDTO> getAllWorkerOrderByJWT() {
+        try {
+            log.info("BEGIN getAllWorkerOrderByJWT");
+            List<OrderResultDTO> rs;
+            rs = orderRepository.findAllByWorker_Username(JWTVerifier.USERNAME).stream().map(orderMapper::toDto).collect(Collectors.toList());
+            return rs;
+        } finally {
+            log.info("End getAllWorkerOrderByJWT");
+          }
+    }
+  
+    @Override
     public List<OrderResultDTO> getAllOrderByJWTSkills() {
         try {
             log.info("BEGIN getAllOrderByJWTSkills");

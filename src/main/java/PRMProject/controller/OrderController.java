@@ -135,4 +135,15 @@ public class OrderController {
             log.info("End getOrderByJWT Controller");
         }
     }
+
+    @GetMapping("/worker/jwt")
+    public ResponseEntity getWorkerOrderByJWT() {
+        try {
+            log.info("Begin getOrderByJWT Controller");
+            List<OrderResultDTO> rs = orderService.getAllWorkerOrderByJWT();
+            return ResponseEntity.ok(rs);
+        } finally {
+            log.info("End getOrderByJWT Controller");
+        }
+    }
 }
