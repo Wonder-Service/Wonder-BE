@@ -27,5 +27,7 @@ public interface OrderService {
     List<OrderResultDTO> getAllWorkerOrderByJWT();
 
     List<OrderResultDTO> getAllOrderByJWTSkills();
+
+    OrderResultDTO updateOrder(OrderResultDTO orderDTO);
   
 }

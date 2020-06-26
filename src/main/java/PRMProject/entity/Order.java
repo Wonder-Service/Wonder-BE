@@ -51,7 +51,7 @@ public class Order {
     private String status;
 
     @Column(name = "RATE")
-    private int rate;
+    private float rate;
 
     @Column(name = "FEEDBACK")
     private String feedback;
@@ -76,4 +76,6 @@ public class Order {
     @CreatedDate
     @Column(name = "create_at")
     private Date createAt;
+
+    private BigDecimal price;
 }
