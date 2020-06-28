@@ -26,5 +26,8 @@ public class OrderDTO {
     private String deviceId;
     private String notificationType;
     private String customerName;
+    private String status;
+    private String feedBack;
+    private String rate;
 
 }

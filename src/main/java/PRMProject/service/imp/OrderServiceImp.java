@@ -261,6 +261,36 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
+    @Override
+    public OrderResultDTO updateOrder(OrderResultDTO orderDTO) {
+        try {
+            log.info("updateOrder Service");
+            if (orderDTO.getId() != null) {
+                Optional<Order> orderOptional = orderRepository.findById(orderDTO.getId());
+                if (orderOptional.isPresent()) {
+                    Order rs = orderOptional.get();
+                    if (orderDTO.getStatus() != null) {
+                        rs.setStatus(orderDTO.getStatus());
+                    }
+                    if (orderDTO.getTotalCredit() != null) {
+                        rs.setPrice(orderDTO.getTotalCredit());
+                    }
+                    if (orderDTO.getFeedback() != null) {
+                        rs.setFeedback(orderDTO.getFeedback());
+                    }
+                    if (orderDTO.getRate() != 0) {
+                        rs.setRate(orderDTO.getRate());
+                    }
+                    rs = orderRepository.save(rs);
+                    return orderMapper.toDto(rs);
+                }
+            }
+            return null;
+        }finally {
+            log.info("updateOrder Service");
+        }
+    }
+
     public static void sendNotification(String deviceId, Object data) throws IOException {
         String result = "";
         String token = "ExponentPushToken[" + deviceId + "]";

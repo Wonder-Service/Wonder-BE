@@ -1,6 +1,7 @@
 package PRMProject.config.mapper;
 
 import PRMProject.entity.Order;
+import PRMProject.model.OrderDTO;
 import PRMProject.model.OrderResultDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -46,6 +46,17 @@ public class OrderController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity<OrderResultDTO> updateOrder(OrderResultDTO orderDTO) {
+        try {
+            log.info("updateOrder Controller");
+            OrderResultDTO dto = orderService.updateOrder(orderDTO);
+            return  ResponseEntity.ok(dto);
+        } finally {
+            log.info("updateOrder Controller");
+        }
+    }
+
     @GetMapping("/skills/jwt")
     public ResponseEntity<List<OrderResultDTO>> getOrdersByJwtAndSkils() {
         try {
