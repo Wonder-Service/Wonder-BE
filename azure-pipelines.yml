@@ -66,3 +66,8 @@ stages:
               appType: webAppLinux
               appName: $(webAppName)
               package: '$(Pipeline.Workspace)/drop/**/target/*.?(war|jar)'
+              RuntimeStack: 'JAVA|8-jre8'
+              StartupCommand: 'java -jar /home/site/wwwroot/app.jar ----server.port=80''
+          
+          
+
