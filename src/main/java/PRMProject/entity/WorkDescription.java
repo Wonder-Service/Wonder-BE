@@ -36,8 +36,8 @@ public class WorkDescription {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "CUSTOMER_ID")
-    private Long customerId;
+    @OneToOne
+    private User customer;
 
     @Column(name = "SKILL_ID")
     private Long skillId;

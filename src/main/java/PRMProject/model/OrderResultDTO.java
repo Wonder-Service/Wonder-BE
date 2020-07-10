@@ -19,6 +19,7 @@ import java.util.Date;
 public class OrderResultDTO {
     private Long id;
     private WorkDescriptionDto workDescription;
+    private UserDto customer;
     private BigDecimal totalCredit;
     private String nameDevice;
     private String address;

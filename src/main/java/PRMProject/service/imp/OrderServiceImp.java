@@ -98,9 +98,10 @@ public class OrderServiceImp implements OrderService {
 
             User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
 
+            Optional<User> customer = userRepository.findById(user.getId());
 
             WorkDescription workDescription = WorkDescription.builder()
-                    .customerId(user.getId())
+                    .customer(customer.get())
                     .description(requestOrderDTO.getDescription()).skillId(requestOrderDTO.getSkillId()).build();
 //
             workDescription = workDescriptionRepository.save(workDescription);
@@ -209,7 +210,7 @@ public class OrderServiceImp implements OrderService {
             //update order
             orderRepository.save(order);
             //get user device
-            Long userId = order.getWorkDescription().getCustomerId();
+            Long userId = order.getWorkDescription().getCustomer().getId();
 
             String deviceId = userRepository.getOne(userId).getDeviceId();
 
