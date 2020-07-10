@@ -64,24 +64,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public List<OrderResultDTO> getAll() {
-        List<Specification<Order>> specification = new ArrayList<>();
-
-        User user = userRepository.findUserByUsernameIgnoreCase(JWTVerifier.USERNAME);
-        switch (user.getRole()) {
-            case Constants.ROLE_WORKER:
-                specification.add((root, query, cb) -> {
-                    Join<Order, User> users = root.join(Order_.worker);
-                    return cb.like(cb.upper(users.get(User_.username)), user.getUsername());
-                });
-                break;
-            case Constants.ROLE_CUSTOMER:
-                specification.add((root, query, cb) -> {
-                    Join<Order, WorkDescription> workDescriptionJoin = root.join(Order_.workDescription);
-                    return cb.equal(workDescriptionJoin.get(WorkDescription_.customerId), user.getId());
-                });
-                break;
-        }
-        return orderRepository.findAll(SpecificationBuilder.build(specification)).stream().map(orderMapper::toDto).collect(Collectors.toList());
+        return orderRepository.findAll().stream().map(orderMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
