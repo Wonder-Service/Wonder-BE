@@ -38,7 +38,6 @@ public class Order {
     private User worker;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WORK_DESCRIPTION_ID")
     private WorkDescription workDescription;
 
     @Column(name = "TOTAL_CREDIT")
